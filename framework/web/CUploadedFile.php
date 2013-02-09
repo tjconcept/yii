@@ -183,24 +183,14 @@ class CUploadedFile extends CComponent
 
 	/**
 	 * Saves the uploaded file.
-	 * Note: this method uses php's move_uploaded_file() method. As such, if the target file ($file) 
-	 * already exists it is overwritten.
+	 * Note: if the target file ($file) already exists it is overwritten.
 	 * @param string $file the file path used to save the uploaded file
-	 * @param boolean $deleteTempFile whether to delete the temporary file after saving.
-	 * If true, you will not be able to save the uploaded file again in the current request.
 	 * @return boolean true whether the file is saved successfully
 	 */
-	public function saveAs($file,$deleteTempFile=true)
+	public function saveAs($file)
 	{
-		if($this->_error==UPLOAD_ERR_OK)
-		{
-			if($deleteTempFile)
-				return move_uploaded_file($this->_tempName,$file);
-			elseif(is_uploaded_file($this->_tempName))
-				return copy($this->_tempName, $file);
-			else
-				return false;
-		}
+		if($this->_error==UPLOAD_ERR_OK && is_uploaded_file($this->_tempName))
+			return copy($this->_tempName, $file);
 		else
 			return false;
 	}
